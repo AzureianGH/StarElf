@@ -26,12 +26,13 @@ namespace RawExecution
             Elf32 elf = new Elf32(nElf);
             elf.PrintElfInfo();
             elf.LoadElf();
+            Console.WriteLine("Elf Loaded");
 
         }
 
         protected override void Run()
         {
-            
+            Console.WriteLine("Hello World!");
         }
     }
 }

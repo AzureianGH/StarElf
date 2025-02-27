@@ -14,9 +14,10 @@ namespace Stellib.Drivers.Injection
         /// Injects a block of unmanaged assembly code into the kernel to be executed.
         /// </summary>
         /// <param name="Data">The unmanaged assembly code to be injected.</param>
+        [PlugMethod(PlugRequired = true)]
         public static unsafe void ExecuteRaw(byte* Data)
         {
-            ((delegate*<void>)Data)();
+            throw null;
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Stellib.Drivers.Injection
             //start executing  Start
 
             byte* offset = Data + Start;
-            ((delegate*<void>)offset)();
+            ExecuteRaw(offset);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Cosmos.Core.Memory;
+﻿using Cosmos.Core;
+using Cosmos.Core.Memory;
+using Stellib.Str;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -204,46 +206,35 @@ namespace Stellib.ELF
             // Execute the entry point
             ExecuteEntryPoint();
         }
-        public void Print(char* str)
+        public class thing
         {
-            char* video = (char*)0xB8000;
-            int i = 0;
-            while (str[i] != '\0')
+            public void Print(char* str)
             {
-                video[i * 2] = str[i];
+                char* video = (char*)0xB8000;
+                int i = 0;
+                while (str[i] != '\0')
+                {
+                    video[i * 2] = str[i];
+                    video[i * 2 + 1] = (char)0x07; // White on black
+                    i++;
+                }
+                video[i * 2] = '\0';
                 video[i * 2 + 1] = (char)0x07; // White on black
-                i++;
             }
-            video[i * 2] = '\0';
-            video[i * 2 + 1] = (char)0x07; // White on black
         }
 
-        static char* test_str = null;
+        
         private void ExecuteEntryPoint()
         {
             byte* entryPoint = StartIndex + Header.Entry;
             // Assuming the entry point is a function pointer, cast and call it
-            var entryFunc = (delegate* unmanaged< void * ,void >)entryPoint;
-            test_str = (char*)Heap.Alloc(13);
-            test_str[0] = 'H';
-            test_str[1] = 'e';
-            test_str[2] = 'l';
-            test_str[3] = 'l';
-            test_str[4] = 'o';
-            test_str[5] = ' ';
-            test_str[6] = 'W';
-            test_str[7] = 'o';
-            test_str[8] = 'r';
-            test_str[9] = 'l';
-            test_str[10] = 'd';
-            test_str[11] = '!';
-            test_str[12] = '\0';
-            //convert Print to a function pointer using Marshal.GetFunctionPointerForDelegate
-            IntPtr mr = Marshal.GetFunctionPointerForDelegate(Print);
-            //convert to a void* pointer
-            void* ptr = (void*)mr;
-            //call the entry function
-            entryFunc(ptr);
+            var entryFunc = (delegate* unmanaged[Stdcall]< char*, int ,int >)entryPoint;
+            string ts = "Hello, World!";
+            int test = entryFunc(null, 32);
+            Console.WriteLine(ts);
+            Console.WriteLine(ts);
+            //call the entry functionS
+            return;
         }
 
         public void PrintElfInfo()
