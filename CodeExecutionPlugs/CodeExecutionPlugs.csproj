@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="IL2CPU.API">
+      <HintPath>..\RawExecution\Library\IL2CPU.API.dll</HintPath>
+    </Reference>
+    <Reference Include="RawExecution">
+      <HintPath>..\RawExecution\bin\Debug\net6.0\RawExecution.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp">
+      <HintPath>..\RawExecution\Library\XSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

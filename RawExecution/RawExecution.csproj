@@ -21,6 +21,9 @@
         <RemoveBootDebugOutput>True</RemoveBootDebugOutput>
         <OptimizationLevel>2</OptimizationLevel>
         <DebugEnabled>False</DebugEnabled>
+        <QemuUseCustomLocation>False</QemuUseCustomLocation>
+        <QemuUseSerial>False</QemuUseSerial>
+        <QemuHWAccel>False</QemuHWAccel>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,6 +37,9 @@
         <PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PlugsReference Include="I:\source\StarElf\CodeExecutionPlugs\CodeExecutionPlugs.csproj"/>
+    </ItemGroup>
 
     <ItemGroup>
       <Reference Include="IL2CPU.API">

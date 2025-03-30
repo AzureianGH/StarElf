@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cosmos.h": "c",
+        "stellar.h": "c",
+        "stdint.h": "c"
+    }
+}

@@ -1,0 +1,80 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "CodeExecutionPlugs/1.0.0": {
+        "dependencies": {
+          "IL2CPU.API": "10.0.0.0",
+          "RawExecution": "1.0.0.0",
+          "XSharp": "10.0.0.0"
+        },
+        "runtime": {
+          "CodeExecutionPlugs.dll": {}
+        }
+      },
+      "IL2CPU.API/10.0.0.0": {
+        "runtime": {
+          "IL2CPU.API.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "RawExecution/1.0.0.0": {
+        "runtime": {
+          "RawExecution.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "XSharp/10.0.0.0": {
+        "runtime": {
+          "XSharp.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Spruce/10.0.0.0": {
+        "runtime": {
+          "Spruce.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CodeExecutionPlugs/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IL2CPU.API/10.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RawExecution/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "XSharp/10.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Spruce/10.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

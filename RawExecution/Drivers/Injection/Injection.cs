@@ -20,6 +20,8 @@ namespace Stellib.Drivers.Injection
             throw null;
         }
 
+        
+
         /// <summary>
         /// Injects a block of unmanaged assembly code into the kernel to be executed at a specific start address.
         /// </summary>
@@ -31,6 +33,15 @@ namespace Stellib.Drivers.Injection
 
             byte* offset = Data + Start;
             ExecuteRaw(offset);
+        }
+    }
+
+    public class ExecutionRepair
+    {
+        [PlugMethod(PlugRequired = true)]
+        public static unsafe void RestoreStack(uint SP, uint BP)
+        {
+            throw null;
         }
     }
 }

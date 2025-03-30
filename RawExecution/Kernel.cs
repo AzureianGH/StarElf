@@ -10,6 +10,7 @@ using Stellib.ELF;
 using IL2CPU.API.Attribs;
 using CodeExecution = Stellib.Drivers.Injection.CodeExecution;
 using XSharp.Assembler;
+using Cosmos.Core_Asm;
 namespace RawExecution
 {
     public unsafe class Kernel : Sys.Kernel
@@ -26,13 +27,11 @@ namespace RawExecution
             Elf32 elf = new Elf32(nElf);
             elf.PrintElfInfo();
             elf.LoadElf();
-            Console.WriteLine("Elf Loaded");
-
+            Console.WriteLine("COSMOS: Control Regained."); 
         }
 
         protected override void Run()
         {
-            Console.WriteLine("Hello World!");
         }
     }
 }

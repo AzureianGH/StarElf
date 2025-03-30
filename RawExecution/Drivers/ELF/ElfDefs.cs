@@ -1,9 +1,11 @@
 ﻿using Cosmos.Core;
 using Cosmos.Core.Memory;
+using RawExecution.Drivers.ELF;
 using Stellib.Str;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -206,33 +208,16 @@ namespace Stellib.ELF
             // Execute the entry point
             ExecuteEntryPoint();
         }
-        public class thing
-        {
-            public void Print(char* str)
-            {
-                char* video = (char*)0xB8000;
-                int i = 0;
-                while (str[i] != '\0')
-                {
-                    video[i * 2] = str[i];
-                    video[i * 2 + 1] = (char)0x07; // White on black
-                    i++;
-                }
-                video[i * 2] = '\0';
-                video[i * 2 + 1] = (char)0x07; // White on black
-            }
-        }
-
         
+
         private void ExecuteEntryPoint()
         {
             byte* entryPoint = StartIndex + Header.Entry;
             // Assuming the entry point is a function pointer, cast and call it
-            var entryFunc = (delegate* unmanaged[Stdcall]< char*, int ,int >)entryPoint;
-            string ts = "Hello, World!";
-            int test = entryFunc(null, 32);
-            Console.WriteLine(ts);
-            Console.WriteLine(ts);
+            var entryFunc = (delegate* unmanaged[Stdcall]<void***, void>)entryPoint;
+            
+
+            entryFunc(CosmosCallsImpl.BuildCalls());
             //call the entry functionS
             return;
         }
