@@ -19,8 +19,6 @@ NO_NAME_MANGLE void main(void*** funcTable) {
     printf("IDT: 0x%p\n", idt);
 
     asm volatile("int $0x80");
-    
-    
 
     return;
 }

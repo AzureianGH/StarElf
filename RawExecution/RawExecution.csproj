@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PlugsReference Include="I:\source\StarElf\CodeExecutionPlugs\CodeExecutionPlugs.csproj"/>
+      <PlugsReference Include="I:\source\StarElf\RawExecution\Library\CodeExecutionPlugs.dll" />
     </ItemGroup>
 
     <ItemGroup>
@@ -48,6 +48,13 @@
       <Reference Include="XSharp">
         <HintPath>Library\XSharp.dll</HintPath>
       </Reference>
+      <Reference Include="Stellib.Drivers">
+        <HintPath>Library\CodeExecutionPlugs.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Drivers\Injection\" />
     </ItemGroup>
 
 </Project>

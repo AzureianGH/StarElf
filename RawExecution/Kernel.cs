@@ -8,7 +8,6 @@ using System.Text;
 using Sys = Cosmos.System;
 using Stellib.ELF;
 using IL2CPU.API.Attribs;
-using CodeExecution = Stellib.Drivers.Injection.CodeExecution;
 using XSharp.Assembler;
 using Cosmos.Core_Asm;
 namespace RawExecution

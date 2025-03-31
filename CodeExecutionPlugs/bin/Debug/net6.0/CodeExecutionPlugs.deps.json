@@ -9,7 +9,6 @@
       "CodeExecutionPlugs/1.0.0": {
         "dependencies": {
           "IL2CPU.API": "10.0.0.0",
-          "RawExecution": "1.0.0.0",
           "XSharp": "10.0.0.0"
         },
         "runtime": {
@@ -21,14 +20,6 @@
           "IL2CPU.API.dll": {
             "assemblyVersion": "10.0.0.0",
             "fileVersion": "10.0.0.0"
-          }
-        }
-      },
-      "RawExecution/1.0.0.0": {
-        "runtime": {
-          "RawExecution.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -57,11 +48,6 @@
       "sha512": ""
     },
     "IL2CPU.API/10.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "RawExecution/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

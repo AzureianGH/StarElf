@@ -1,6 +1,7 @@
 ﻿using Cosmos.Core;
 using Cosmos.Core.Memory;
 using RawExecution.Drivers.ELF;
+using Stellib.Drivers.Injection;
 using Stellib.Str;
 using System;
 using System.Collections.Generic;
@@ -214,10 +215,11 @@ namespace Stellib.ELF
         {
             byte* entryPoint = StartIndex + Header.Entry;
             // Assuming the entry point is a function pointer, cast and call it
-            var entryFunc = (delegate* unmanaged[Stdcall]<void***, void>)entryPoint;
-            
+            //var entryFunc = (delegate* unmanaged[Stdcall]<void***, void>)entryPoint;
 
-            entryFunc(CosmosCallsImpl.BuildCalls());
+            void*** CallList = CosmosCallsImpl.BuildCalls();
+
+            RawExecute.ExecuteBinary(CallList, entryPoint);
             //call the entry functionS
             return;
         }

@@ -2,10 +2,8 @@ I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\CodeExecutionPlugs.deps.js
 I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\CodeExecutionPlugs.dll
 I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\CodeExecutionPlugs.pdb
 I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\IL2CPU.API.dll
-I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\RawExecution.dll
 I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\XSharp.dll
 I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\Spruce.dll
-I:\source\StarElf\CodeExecutionPlugs\bin\Debug\net6.0\RawExecution.pdb
 I:\source\StarElf\CodeExecutionPlugs\obj\Debug\net6.0\CodeExecutionPlugs.csproj.AssemblyReference.cache
 I:\source\StarElf\CodeExecutionPlugs\obj\Debug\net6.0\CodeExecutionPlugs.GeneratedMSBuildEditorConfig.editorconfig
 I:\source\StarElf\CodeExecutionPlugs\obj\Debug\net6.0\CodeExecutionPlugs.AssemblyInfoInputs.cache
