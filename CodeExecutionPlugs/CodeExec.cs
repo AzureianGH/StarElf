@@ -14,8 +14,8 @@ namespace Stellib.Plugs
         // public static unsafe void ExecuteBinary(void*** FuncTable, void* Entry)
         public override void AssembleNew(XSharp.Assembler.Assembler aAssembler, object aMethodInfo)
         {
-            XS.LiteralCode("mov ebx, [ebp + 12]"); // Get the entry point
-            XS.LiteralCode("mov eax, [ebp + 8]"); // Get the function table
+            XS.LiteralCode("mov ebx, [ebp + 8]"); // Get the entry point
+            XS.LiteralCode("mov eax, [ebp + 12]"); // Get the function table
             XS.PushAllRegisters(); // Save all registers
             XS.LiteralCode("push eax"); // Push the entry point
             XS.LiteralCode("call ebx"); // Call the entry point
