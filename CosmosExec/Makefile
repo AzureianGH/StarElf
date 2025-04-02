@@ -15,7 +15,7 @@ $(OUTPUT): $(SOURCES)
 
 build: $(OUTPUT)
 	mkdir -p build
-	cp $(OUTPUT) /mnt/i/source/StarElf/RawExecution/Drivers/ELF/$(OUTPUT)
+	cp $(OUTPUT) ../RawExecution/Drivers/ELF/$(OUTPUT)
 
 clean:
 	rm -f $(OUTPUT) $(OBJECTS)

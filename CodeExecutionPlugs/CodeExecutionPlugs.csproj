@@ -16,4 +16,9 @@
     </Reference>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo STAR BUILD SYSTEM: Copying DLL to Library for Refs"/>
+    <Exec Command="xcopy /Y /D &quot;$(SolutionDir)..\CodeExecutionPlugs\bin\Debug\net6.0\CodeExecutionPlugs.dll&quot; &quot;$(SolutionDir)..\RawExecution\Library\&quot;" />
+  </Target>
+
 </Project>

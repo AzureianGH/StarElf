@@ -1,6 +1,6 @@
 #include "Cosmos.h"
 void example_IDT_GATE(void) {
-    Console_WriteLineA("Interrupt Called!");
+    printf("Interrupt Called!\n");
 }
 
 NO_NAME_MANGLE void main(void*** funcTable) {
