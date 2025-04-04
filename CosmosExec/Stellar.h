@@ -37,16 +37,16 @@ typedef struct idt_ptr_struct {
 char* utf16_to_ascii(const char* utf16);
 char* ascii_to_utf16(const char* ascii);
 
-/// @brief Gets the length of a string
-/// @param str The string to get the length of
-/// @return The length of the string
 int strlen(char* str);
-
-/// @brief Compares two strings
-/// @param str1 The first string to compare
-/// @param str2 The second string to compare
-/// @return 0 if the strings are equal, a negative number if str1 is less than str2, and a positive number if str1 is greater than str2
 int strcmp(const char* str1, const char* str2);
+char* strncpy(char* dest, const char* src, unsigned int n);
+int strcspn(const char* str1, const char* str2);
+int strtol(const char* str, char** endptr, int base);
+unsigned int strtoul(const char* str, char** endptr, int base);
+float strtof(const char* str, char** endptr);
+int tolower(int c);
+int toupper(int c);
+int isdigit(int c);
 
 /// @brief Copies memory from one location to another
 /// @param dest The destination to copy to
@@ -171,11 +171,15 @@ void free(void* ptr);
 void* calloc(size_t num, size_t size);
 void* realloc(void* ptr, size_t size);
 
+int isspace(int c);
+
 void itoa(int num, char* str, int base);
 void ltoa(long num, char* str, int base);
 void utoa(unsigned int num, char* str, int base);
 void ultoa(unsigned long num, char* str, int base);
 void uitoa(unsigned int num, char* str, int base);
+void atoi(int num, char* str, int base);
+float atof(const char* str);
 
 void printf(const char* format, ...);
 int sprintf(char* str, const char* format, ...);
@@ -183,6 +187,16 @@ int snprintf(char* str, size_t size, const char* format, ...);
 void vsnprintf(char *str, size_t size, const char *format, va_list args);
 void vsprintf(char* str, const char* format, va_list ap);
 void clrscr(void);
+
+void gets(char* str, size_t size);
+
+//scanf functions
+int scanf(const char *fmt, ...);
+int vscanf(const char* format, va_list ap);
+int vfscanf(const char* format, va_list ap);
+int vsscanf(const char* str, const char* format, va_list ap);
+int sscanf(const char* str, const char* format, ...);
+
 
 
 

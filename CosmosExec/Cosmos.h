@@ -2,6 +2,7 @@
 #include "Stellar.h"
 #define PREVENT_ENCODING_MANGLING
 #define main __stdcall _start
+#define COSMOS_INIT() debug_serial_init(); Cosmos_RegisterFunctionTable(funcTable);
 
 /// @brief Register the function table for the kernel to call
 /// @param funcTable The function table to register

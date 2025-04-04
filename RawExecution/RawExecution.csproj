@@ -13,7 +13,7 @@
         <StartCosmosGDB>False</StartCosmosGDB>
         <VisualStudioDebugPort>Pipe: Cosmos\Serial</VisualStudioDebugPort>
         <CosmosDebugPort>Serial: COM1</CosmosDebugPort>
-        <Launch>Qemu</Launch>
+        <Launch>VMware</Launch>
         <Profile>VMware</Profile>
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
@@ -22,8 +22,14 @@
         <OptimizationLevel>2</OptimizationLevel>
         <DebugEnabled>False</DebugEnabled>
         <QemuUseCustomLocation>False</QemuUseCustomLocation>
-        <QemuUseSerial>False</QemuUseSerial>
+        <QemuUseSerial>True</QemuUseSerial>
         <QemuHWAccel>False</QemuHWAccel>
+        <QemuUseCustomParameters>False</QemuUseCustomParameters>
+        <TraceMode>User</TraceMode>
+        <StackCorruptionDetectionLevel>AllInstructions</StackCorruptionDetectionLevel>
+        <QemuMemory>1024</QemuMemory>
+        <QemuVideoDriver>VMWare</QemuVideoDriver>
+        <VMWareEdition>Player</VMWareEdition>
     </PropertyGroup>
 
     <ItemGroup>

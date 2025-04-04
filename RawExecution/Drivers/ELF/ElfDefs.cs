@@ -5,6 +5,7 @@ using Stellib.Drivers.Injection;
 using Stellib.Str;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -157,10 +158,36 @@ namespace Stellib.ELF
 
     public unsafe class Elf32
     {
+        public class InvalidElfPathException : Exception
+        {
+            public InvalidElfPathException(string message) : base(message) { }
+        }
         public Elf32_Ehdr Header;
         public uchar[] Magic;
         public List<Elf32_Phdr> ProgramHeaders = new List<Elf32_Phdr>();
         byte* StartIndex = null;
+        private List<IntPtr> AllocatedMemory = new List<IntPtr>();
+        string Path = "";
+        public Elf32(string path)
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            Path = path;
+            fixed (byte* p = bytes)
+            {
+                StartIndex = p;
+                Header = *(Elf32_Ehdr*)p;
+                Magic = new byte[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    Magic[i] = Header.Magic[i];
+                }
+                for (int i = 0; i < Header.PhNum; i++)
+                {
+                    var phdr = *(Elf32_Phdr*)(p + Header.PhOff + (i * Header.PhEntSize));
+                    ProgramHeaders.Add(phdr);
+                }
+            }
+        }
 
         public Elf32(byte[] bytes)
         {
@@ -187,20 +214,55 @@ namespace Stellib.ELF
             return entry;
         }
 
-        public void LoadElf()
+        public void ReloadElf()
         {
+            if (Path == "")
+            {
+                throw new InvalidElfPathException("Path is not set. Cannot reload ELF.");
+            }
+
+            if (!File.Exists(Path))
+            {
+                throw new InvalidElfPathException("File does not exist.");
+            }
+
+            byte[] bytes = File.ReadAllBytes(Path);
+            fixed (byte* p = bytes)
+            {
+                StartIndex = p;
+                Header = *(Elf32_Ehdr*)p;
+                Magic = new byte[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    Magic[i] = Header.Magic[i];
+                }
+                ProgramHeaders.Clear();
+                for (int i = 0; i < Header.PhNum; i++)
+                {
+                    var phdr = *(Elf32_Phdr*)(p + Header.PhOff + (i * Header.PhEntSize));
+                    ProgramHeaders.Add(phdr);
+                }
+            }
+            // Free previously allocated memory if any
+            FreeElf();
+
+            // Load the ELF again
             foreach (var phdr in ProgramHeaders)
             {
                 if (phdr.Type == (uint)ElfSegmentType.Load)
                 {
-                    byte* mem = Heap.Alloc(phdr.MemSize);
-                    Buffer.MemoryCopy(StartIndex + phdr.Offset, mem, phdr.MemSize, phdr.FileSize);
-                    if (phdr.MemSize > phdr.FileSize)
+                    IntPtr mem = (IntPtr)Heap.Alloc(phdr.MemSize);
+                    AllocatedMemory.Add(mem); // Track the allocated memory
+                    unsafe
                     {
-                        // Zero out the rest of the memory if MemSize is greater than FileSize
-                        for (uint i = phdr.FileSize; i < phdr.MemSize; i++)
+                        Buffer.MemoryCopy(StartIndex + phdr.Offset, (byte*)mem, phdr.MemSize, phdr.FileSize);
+                        if (phdr.MemSize > phdr.FileSize)
                         {
-                            mem[i] = 0;
+                            // Zero out the rest of the memory if MemSize is greater than FileSize
+                            for (uint i = phdr.FileSize; i < phdr.MemSize; i++)
+                            {
+                                ((byte*)mem)[i] = 0;
+                            }
                         }
                     }
                 }
@@ -209,7 +271,34 @@ namespace Stellib.ELF
             // Execute the entry point
             ExecuteEntryPoint();
         }
-        
+
+        public void LoadAndExecuteElf()
+        {
+            foreach (var phdr in ProgramHeaders)
+            {
+                if (phdr.Type == (uint)ElfSegmentType.Load)
+                {
+                    IntPtr mem = (IntPtr)Heap.Alloc(phdr.MemSize);
+                    AllocatedMemory.Add(mem); // Track the allocated memory
+                    unsafe
+                    {
+                        Buffer.MemoryCopy(StartIndex + phdr.Offset, (byte*)mem, phdr.MemSize, phdr.FileSize);
+                        if (phdr.MemSize > phdr.FileSize)
+                        {
+                            // Zero out the rest of the memory if MemSize is greater than FileSize
+                            for (uint i = phdr.FileSize; i < phdr.MemSize; i++)
+                            {
+                                ((byte*)mem)[i] = 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Execute the entry point
+            ExecuteEntryPoint();
+        }
+
 
         private void ExecuteEntryPoint()
         {
@@ -223,6 +312,18 @@ namespace Stellib.ELF
             //call the entry functionS
             return;
         }
+
+        public void FreeElf()
+        {
+            // Free all allocated memory
+            foreach (var mem in AllocatedMemory)
+            {
+                Heap.Free((byte*)mem);
+            }
+            AllocatedMemory.Clear(); // Clear the list after freeing
+            
+        }
+        
 
         public void PrintElfInfo()
         {

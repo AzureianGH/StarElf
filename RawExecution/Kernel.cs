@@ -10,23 +10,28 @@ using Stellib.ELF;
 using IL2CPU.API.Attribs;
 using XSharp.Assembler;
 using Cosmos.Core_Asm;
+using Cosmos.System.FileSystem;
+using Cosmos.System.FileSystem.VFS;
+using System.IO;
+using System.Diagnostics.Metrics;
 namespace RawExecution
 {
     public unsafe class Kernel : Sys.Kernel
     {
+        CosmosVFS mVFS = new CosmosVFS();
+
         [ManifestResourceStream(ResourceName = "RawExecution.Drivers.ELF.TestElf")]
         public static byte[] TestElf;
         protected override void BeforeRun()
         {
-            byte[] nElf = new byte[TestElf.Length];
-            for (int i = 0; i < TestElf.Length; i++)
-            {
-                nElf[i] = TestElf[i];
-            }
-            Elf32 elf = new Elf32(nElf);
-            elf.PrintElfInfo();
-            elf.LoadElf();
-            Console.WriteLine("COSMOS: Control Regained."); 
+            VFSManager.RegisterVFS(mVFS);
+
+            File.WriteAllBytes(@"0:\Elfs\TestElf", TestElf);
+
+            Elf32 elf = new Elf32(@"0:\Elfs\TestElf");
+            elf.LoadAndExecuteElf();
+            elf.ReloadElf();
+            elf.FreeElf();
         }
 
         protected override void Run()

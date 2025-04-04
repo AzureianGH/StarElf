@@ -21,6 +21,127 @@ int strcmp(const char* str1, const char* str2) {
     return *(unsigned char*)str1 - *(unsigned char*)str2;
 }
 
+char* strncpy(char* dest, const char* src, unsigned int n) {
+    char* d = dest;
+    const char* s = src;
+    while (n && *s) {
+        *d++ = *s++;
+        n--;
+    }
+    while (n) {
+        *d++ = 0;
+        n--;
+    }
+    return dest;
+}
+
+int strcspn(const char* str1, const char* str2) {
+    int count = 0;
+    while (*str1) {
+        const char* s = str2;
+        while (*s) {
+            if (*str1 == *s) {
+                return count; // Return the length of the initial segment
+            }
+            s++;
+        }
+        count++;
+        str1++;
+    }
+    return count; // Return the length of the entire string if no match found
+}
+
+int strtol(const char* str, char** endptr, int base) {
+    int result = 0;
+    int sign = 1;
+    if (*str == '-') {
+        sign = -1;
+        str++;
+    } else if (*str == '+') {
+        str++;
+    }
+    while (*str) {
+        int digit = *str - '0';
+        if (digit >= 10) {
+            digit = *str - 'a' + 10;
+        }
+        if (digit >= base) {
+            break;
+        }
+        result = result * base + digit;
+        str++;
+    }
+    if (endptr) {
+        *endptr = (char*)str;
+    }
+    return result * sign;
+}
+
+float strtof(const char* str, char** endptr) {
+    float result = 0.0f;
+    int sign = 1;
+    if (*str == '-') {
+        sign = -1;
+        str++;
+    } else if (*str == '+') {
+        str++;
+    }
+    while (*str >= '0' && *str <= '9') {
+        result = result * 10.0f + (*str - '0');
+        str++;
+    }
+    if (*str == '.') {
+        str++;
+        float decimal_place = 0.1f;
+        while (*str >= '0' && *str <= '9') {
+            result += decimal_place * (*str - '0');
+            decimal_place *= 0.1f;
+            str++;
+        }
+    }
+    if (endptr) {
+        *endptr = (char*)str;
+    }
+    return result * sign;
+}
+
+unsigned int strtoul(const char* str, char** endptr, int base) {
+    unsigned int result = 0;
+    while (*str) {
+        int digit = *str - '0';
+        if (digit >= 10) {
+            digit = *str - 'a' + 10;
+        }
+        if (digit >= base) {
+            break;
+        }
+        result = result * base + digit;
+        str++;
+    }
+    if (endptr) {
+        *endptr = (char*)str;
+    }
+    return result;
+}
+
+int tolower(int c) {
+    if (c >= 'A' && c <= 'Z') {
+        return c + 32; // Convert uppercase to lowercase
+    }
+    return c;
+}
+
+int toupper(int c) {
+    if (c >= 'a' && c <= 'z') {
+        return c - 32; // Convert lowercase to uppercase
+    }
+    return c;
+}
+
+int isdigit(int c) {
+    return (c >= '0' && c <= '9'); // Check if the character is a digit
+}
+
 void* memcpy(void* dest, const void* src, unsigned int n) {
     char* d = (char*)dest;
     const char* s = (const char*)src;
@@ -244,6 +365,10 @@ void* realloc(void* ptr, size_t size) {
     return new_ptr; // Return the pointer to the new memory location
 }
 
+int isspace(int c) {
+    return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v'); // Check if the character is a whitespace character
+}
+
 void itoa(int num, char* str, int base) {
     int i = 0;
     int isNegative = 0;
@@ -301,6 +426,16 @@ void ultoa(unsigned long num, char* str, int base) {
 }
 
 void uitoa(unsigned int num, char* str, int base) {
+    int i = 0;
+    do {
+        int rem = num % base;
+        str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0'; // Convert to character
+        num /= base;
+    } while (num != 0);
+    str[i] = '\0'; // Null-terminate the string
+}
+
+void atoi(int num, char* str, int base) {
     int i = 0;
     do {
         int rem = num % base;
@@ -484,6 +619,12 @@ void vsnprintf(char *str, size_t size, const char *format, va_list args)
                 }
                 break;
             }
+            case '%':
+            {
+                *buffer = '%'; // Print the % character
+                buffer++;
+                break;
+            }
             }
         }
         else
@@ -542,4 +683,154 @@ void vsprintf(char* str, const char* format, va_list ap) {
 
 void clrscr(void) {
     Console_Clear(); // Clear the console screen
+}
+
+void gets(char* str, size_t size)
+{
+    //use Console_ReadLineA and return the string
+    char* input = Console_ReadLineA(); // Read a line from the console
+    if (input) {
+        strncpy(str, input, size); // Copy the input string to the provided buffer
+        str[size - 1] = '\0'; // Ensure null termination
+    } else {
+        str[0] = '\0'; // If no input, set the string to empty
+    }
+    free(input); // Free the memory allocated for the input string
+}
+
+int scanf(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    char buffer[256]; // Buffer for formatted string
+    gets(buffer, sizeof(buffer)); // Read input from the console
+    
+    int count = 0;
+    const char* p = fmt;
+    char* input = buffer;
+    
+    while (*p != '\0') {
+        if (*p == '%') {
+            p++;
+            // Skip leading spaces in input
+            while (isspace((unsigned char)*input)) {
+                input++;
+            }
+            switch (*p) {
+                case 'd': { // read integer
+                    int* dest = va_arg(args, int*);
+                    char temp[32];
+                    int i = 0;
+                    int sign = 1;
+                    if (*input == '-') {
+                        sign = -1;
+                        input++;
+                    }
+                    while (isdigit((unsigned char)*input) && i < (int)(sizeof(temp) - 1)) {
+                        temp[i++] = *input++;
+                    }
+                    temp[i] = '\0';
+                    *dest = sign * strtol(temp, NULL, 10);
+                    count++;
+                    break;
+                }
+                case 'u': { // read unsigned integer
+                    unsigned int* dest = va_arg(args, unsigned int*);
+                    char temp[32];
+                    int i = 0;
+                    while (isdigit((unsigned char)*input) && i < (int)(sizeof(temp) - 1)) {
+                        temp[i++] = *input++;
+                    }
+                    temp[i] = '\0';
+                    *dest = (unsigned int)strtoul(temp, NULL, 10);
+                    count++;
+                    break;
+                }
+                case 'x': { // read hexadecimal
+                    unsigned int* dest = va_arg(args, unsigned int*);
+                    char temp[32];
+                    int i = 0;
+                    while (((*input >= '0' && *input <= '9') ||
+                            (*input >= 'a' && *input <= 'f') ||
+                            (*input >= 'A' && *input <= 'F')) && i < (int)(sizeof(temp) - 1)) {
+                        temp[i++] = *input++;
+                    }
+                    temp[i] = '\0';
+                    *dest = (unsigned int)strtoul(temp, NULL, 16);
+                    count++;
+                    break;
+                }
+                case 's': { // read string
+                    char* dest = va_arg(args, char*);
+                    while (*input && !isspace((unsigned char)*input)) {
+                        *dest++ = *input++;
+                    }
+                    *dest = '\0';
+                    count++;
+                    break;
+                }
+                case 'c': { // read a single character
+                    char* dest = va_arg(args, char*);
+                    *dest = *input ? *input++ : '\0';
+                    count++;
+                    break;
+                }
+            }
+        } else {
+            p++;
+        }
+    }
+    
+    va_end(args);
+    return count; // Return the number of items successfully read
+}
+
+int sscanf(const char *str, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    int ret = 0; // Number of items successfully read
+    while (*fmt) {
+        if (*fmt == '%') {
+            fmt++;
+            switch (*fmt) {
+                case 'd': {
+                    int *i = va_arg(args, int*);
+                    *i = strtol(str, (char**)&str, 10); // Read integer from string
+                    ret++;
+                    break;
+                }
+                case 'u': {
+                    unsigned int *i = va_arg(args, unsigned int*);
+                    *i = strtoul(str, (char**)&str, 10); // Read unsigned integer from string
+                    ret++;
+                    break;
+                }
+                case 'x': {
+                    unsigned int *i = va_arg(args, unsigned int*);
+                    *i = strtoul(str, (char**)&str, 16); // Read hexadecimal from string
+                    ret++;
+                    break;
+                }
+                case 's': {
+                    char *s = va_arg(args, char*);
+                    while (*str && !isspace(*str)) { // Read string until whitespace
+                        *s++ = *str++;
+                    }
+                    *s = '\0'; // Null-terminate the string
+                    ret++;
+                    break;
+                }
+                case 'c': {
+                    char *c = va_arg(args, char*);
+                    *c = *str++; // Read character from string
+                    ret++;
+                    break;
+                }
+            }
+        } else {
+            str++; // Skip non-format characters in the input string
+        }
+        fmt++;
+    }
+    va_end(args);
+    return ret; // Return the number of items successfully read
 }

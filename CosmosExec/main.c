@@ -1,22 +1,15 @@
 #include "Cosmos.h"
-void example_IDT_GATE(void) {
-    printf("Interrupt Called!\n");
-}
-
+#include <stdio.h>
 NO_NAME_MANGLE void main(void*** funcTable) {
-    debug_serial_init();
-    Cosmos_RegisterFunctionTable(funcTable);
+    COSMOS_INIT();
 
-    clrscr();
-
-    get_current_idt();
-    idt_ptr_t idt = get_idt();
-    set_idt_gate(0x80, (int)example_IDT_GATE, 0x08, 0x8E);
-    set_idt(idt);
-
-    printf("IDT: 0x%p\n", &idt);
-
-    asm volatile("int $0x80");
+    printf("What's your name and age and favorite number and favorite float?\n");
+    char nameage[100];
+    int age;
+    int favnum;
+    int favnumf;
+    scanf("%s %d %d %d", nameage, &age, &favnum, &favnumf);
+    printf("Hello, %s, you are %x, and your favorite number is %x, %x!\n", nameage, age, favnum, favnumf);
 
     return;
 }

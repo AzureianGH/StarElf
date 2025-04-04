@@ -284,6 +284,110 @@ namespace RawExecution.Drivers.ELF
             }
         }
 
+        public static class File
+        {
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void WriteAllBytes(char* path, byte* data, int length)
+            {
+                string sPath = new string(path);
+                System.IO.File.WriteAllBytes(sPath, new Span<byte>(data, length).ToArray());
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void WriteAllText(char* path, char* data)
+            {
+                string sPath = new string(path);
+                string sData = new string(data);
+                System.IO.File.WriteAllText(sPath, sData);
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void AppendAllText(char* path, char* data)
+            {
+                string sPath = new string(path);
+                string sData = new string(data);
+                System.IO.File.AppendAllText(sPath, sData);
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void Delete(char* path)
+            {
+                string sPath = new string(path);
+                System.IO.File.Delete(sPath);
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void Copy(char* sourcePath, char* destPath)
+            {
+                string sSourcePath = new string(sourcePath);
+                string sDestPath = new string(destPath);
+                System.IO.File.Copy(sSourcePath, sDestPath);
+            }
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void Move(char* sourcePath, char* destPath)
+            {
+                string sSourcePath = new string(sourcePath);
+                string sDestPath = new string(destPath);
+                System.IO.File.Move(sSourcePath, sDestPath);
+            }
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void Exists(char* path, int* result)
+            {
+                string sPath = new string(path);
+                *result = System.IO.File.Exists(sPath) ? 1 : 0;
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void ReadAllBytes(char* path, byte* buffer, int length)
+            {
+                string sPath = new string(path);
+                byte[] data = System.IO.File.ReadAllBytes(sPath);
+                if (data.Length > length)
+                {
+                    throw new ArgumentException("Buffer is too small to hold the file data.");
+                }
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    buffer[i] = data[i];
+                }
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void ReadAllText(char* path, char* buffer, int length)
+            {
+                string sPath = new string(path);
+                string data = System.IO.File.ReadAllText(sPath);
+                if (data.Length > length)
+                {
+                    throw new ArgumentException("Buffer is too small to hold the file data.");
+                }
+                for (int i = 0; i < data.Length; i++)
+                {
+                    buffer[i] = data[i];
+                }
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static void ReadAllLines(char* path, char** buffer, int length)
+            {
+                string sPath = new string(path);
+                string[] data = System.IO.File.ReadAllLines(sPath);
+                if (data.Length > length)
+                {
+                    throw new ArgumentException("Buffer is too small to hold the file data.");
+                }
+                for (int i = 0; i < data.Length; i++)
+                {
+                    buffer[i] = (char*)Cosmos.Core.Memory.Heap.Alloc((uint)(data[i].Length * sizeof(char)));
+                    for (int j = 0; j < data[i].Length; j++)
+                    {
+                        buffer[i][j] = data[i][j];
+                    }
+                }
+            }
+        }
+
         public static class APIDefaults
         {
             public static void Exit(int code)
