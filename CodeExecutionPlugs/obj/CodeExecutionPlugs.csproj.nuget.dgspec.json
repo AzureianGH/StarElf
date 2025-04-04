@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "I:\\source\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj": {}
+    "C:\\Users\\alexm\\source\\repos\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj": {}
   },
   "projects": {
-    "I:\\source\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj": {
+    "C:\\Users\\alexm\\source\\repos\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "I:\\source\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj",
+        "projectUniqueName": "C:\\Users\\alexm\\source\\repos\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj",
         "projectName": "CodeExecutionPlugs",
-        "projectPath": "I:\\source\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj",
-        "packagesPath": "C:\\Users\\Nathan\\.nuget\\packages\\",
-        "outputPath": "I:\\source\\StarElf\\CodeExecutionPlugs\\obj\\",
+        "projectPath": "C:\\Users\\alexm\\source\\repos\\StarElf\\CodeExecutionPlugs\\CodeExecutionPlugs.csproj",
+        "packagesPath": "C:\\Users\\alexm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alexm\\source\\repos\\StarElf\\CodeExecutionPlugs\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "E:\\vs2022shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Nathan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\alexm\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,8 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "C:\\Users\\Nathan\\AppData\\Roaming\\Cosmos User Kit\\packages\\": {},
+          "C:\\Users\\alexm\\AppData\\Roaming\\Cosmos User Kit\\packages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,7 +45,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net6.0": {
@@ -67,7 +66,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

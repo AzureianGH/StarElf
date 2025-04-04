@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CodeExecutionPlugs")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0d00c4ddb67dc1b710617f802ba7a45e2f3fc5d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca07f3cf99d70586b302a24744151a9868ed876b")]
 [assembly: System.Reflection.AssemblyProductAttribute("CodeExecutionPlugs")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CodeExecutionPlugs")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

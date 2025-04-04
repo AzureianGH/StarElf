@@ -44,7 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PlugsReference Include="I:\source\StarElf\RawExecution\Library\CodeExecutionPlugs.dll" />
+      <PlugsReference Include="Library\CodeExecutionPlugs.dll" />
     </ItemGroup>
 
     <ItemGroup>
