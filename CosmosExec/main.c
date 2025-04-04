@@ -1,5 +1,4 @@
 #include "Cosmos.h"
-#include <stdio.h>
 NO_NAME_MANGLE void main(void*** funcTable) {
     COSMOS_INIT();
 
@@ -7,9 +6,17 @@ NO_NAME_MANGLE void main(void*** funcTable) {
     char nameage[100];
     int age;
     int favnum;
-    int favnumf;
-    scanf("%s %d %d %d", nameage, &age, &favnum, &favnumf);
-    printf("Hello, %s, you are %x, and your favorite number is %x, %x!\n", nameage, age, favnum, favnumf);
+
+    scanf("%s %d %d", nameage, &age, &favnum);
+    printf("Hello, %d, you are %d, and your favorite number is %d!\n", nameage, age, favnum);
+    char vendor[13];
+    unsigned int eax, ebx, ecx, edx;
+    __asm__ __volatile__ ("cpuid" : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx) : "a"(0) : "cc");
+    *((unsigned int*)vendor) = ebx;
+    *((unsigned int*)(vendor + 4)) = edx;
+    *((unsigned int*)(vendor + 8)) = ecx;
+    vendor[12] = '\0';
+    printf("CPU Vendor: %s\n", vendor);
 
     return;
 }
