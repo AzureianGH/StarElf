@@ -1,12 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using XSharp.x86.Params;
 
 namespace RawExecution.Drivers.ELF
 {
     public static unsafe class CosmosCallsImpl
     {
+        static List<FileStream> OpenHandles = new List<FileStream>();
         // struct to hold function data for each class
+        [StructLayout(LayoutKind.Sequential)]
+        public struct C_FILE
+        {
+            public char* _ptr;
+            public int _cnt;
+            public char* _base;
+            public int _flag;
+            public int _file;
+            public int _charbuf;
+            public int _bufsiz;
+            public char* _tmpfname;
+        };
+
         private struct FunctionClass
         {
             // console functions
@@ -32,6 +49,15 @@ namespace RawExecution.Drivers.ELF
             public delegate* unmanaged[Stdcall]<uint, void*> AllocFunc;
             public delegate* unmanaged[Stdcall]<void*, void> FreeFunc;
 
+            // file functions
+            public delegate* unmanaged[Stdcall]<char*, char*, C_FILE*> FileOpenFunc;
+            public delegate* unmanaged[Stdcall]<C_FILE*, int> FileCloseFunc;
+            public delegate* unmanaged[Stdcall]<void*, uint, uint, C_FILE*, int> FileReadFunc;
+            public delegate* unmanaged[Stdcall]<void*, uint, uint, C_FILE*, int> FileWriteFunc;
+            public delegate* unmanaged[Stdcall]<C_FILE*, int, int, int> FileSeekFunc;
+            public delegate* unmanaged[Stdcall]<C_FILE*, int> FileTellFunc;
+            public delegate* unmanaged[Stdcall]<C_FILE*, int> FileFlushFunc;
+
             public FunctionClass(
                 delegate* unmanaged[Stdcall]<char*, void> printLineFunc,
                 delegate* unmanaged[Stdcall]<char*, void> printNoLineFunc,
@@ -52,7 +78,16 @@ namespace RawExecution.Drivers.ELF
                 delegate* unmanaged[Stdcall]<int, int, void> setCursorPositionFunc,
 
                 delegate* unmanaged[Stdcall]<uint, void*> allocFunc,
-                delegate* unmanaged[Stdcall]<void*, void> freeFunc)
+                delegate* unmanaged[Stdcall]<void*, void> freeFunc,
+
+                delegate* unmanaged[Stdcall]<char*, char*, C_FILE*> fileOpenFunc,
+                delegate* unmanaged[Stdcall]<C_FILE*, int> fileCloseFunc,
+                delegate* unmanaged[Stdcall]<void*, uint, uint, C_FILE*, int> fileReadFunc,
+                delegate* unmanaged[Stdcall]<void*, uint, uint, C_FILE*, int> fileWriteFunc,
+                delegate* unmanaged[Stdcall]<C_FILE*, int, int, int> fileSeekFunc,
+                delegate* unmanaged[Stdcall]<C_FILE*, int> fileTellFunc,
+                delegate* unmanaged[Stdcall]<C_FILE*, int> fileFlushFunc)
+
             {
                 PrintLineFunc = printLineFunc;
                 PrintNoLineFunc = printNoLineFunc;
@@ -74,10 +109,18 @@ namespace RawExecution.Drivers.ELF
 
                 AllocFunc = allocFunc;
                 FreeFunc = freeFunc;
+
+                FileOpenFunc = fileOpenFunc;
+                FileCloseFunc = fileCloseFunc;
+                FileReadFunc = fileReadFunc;
+                FileWriteFunc = fileWriteFunc;
+                FileSeekFunc = fileSeekFunc;
+                FileTellFunc = fileTellFunc;
+                FileFlushFunc = fileFlushFunc;
             }
         }
 
-        static int classCount = 2;
+        static int classCount = 3;
 
         public static void*** BuildCalls()
         {
@@ -86,6 +129,7 @@ namespace RawExecution.Drivers.ELF
 
             functionTable[0] = BuildFunctionTableForConsole();
             functionTable[1] = BuildFunctionTableForHeap();
+            functionTable[2] = BuildFunctionTableForFile();
 
             return functionTable;
         }
@@ -155,6 +199,28 @@ namespace RawExecution.Drivers.ELF
             }
 
             return heapTable;
+        }
+
+        private static void** BuildFunctionTableForFile()
+        {
+            // define File functions in a modular way
+            delegate* unmanaged[Stdcall]<char*, char*, C_FILE*> fileOpenFunc = &File.FileOpen;
+            delegate* unmanaged[Stdcall]<C_FILE*, int> fileCloseFunc = &File.FileClose;
+            delegate* unmanaged[Stdcall]<void*, uint, uint, C_FILE*, int> fileReadFunc = &File.FileRead;
+            delegate* unmanaged[Stdcall]<void*, uint, uint, C_FILE*, int> fileWriteFunc = &File.FileWrite;
+            delegate* unmanaged[Stdcall]<C_FILE*, int, int, int> fileSeekFunc = &File.FileSeek;
+            delegate* unmanaged[Stdcall]<C_FILE*, int> fileTellFunc = &File.FileTell;
+            delegate* unmanaged[Stdcall]<C_FILE*, int> fileFlushFunc = &File.FileFlush;
+
+
+            void*[] callsFile = { fileOpenFunc, fileCloseFunc, fileReadFunc, fileWriteFunc, fileSeekFunc, fileTellFunc, fileFlushFunc };
+            // alloc memory and populate the function table
+            void** fileTable = (void**)Cosmos.Core.Memory.Heap.Alloc((uint)(callsFile.Length * sizeof(void*)));
+            for (int i = 0; i < callsFile.Length; i++)
+            {
+                fileTable[i] = callsFile[i];
+            }
+            return fileTable;
         }
 
         public static class Console
@@ -287,104 +353,200 @@ namespace RawExecution.Drivers.ELF
         public static class File
         {
             [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void WriteAllBytes(char* path, byte* data, int length)
+            public static C_FILE* FileOpen(char* path, char* mode)
             {
-                string sPath = new string(path);
-                System.IO.File.WriteAllBytes(sPath, new Span<byte>(data, length).ToArray());
-            }
-
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void WriteAllText(char* path, char* data)
-            {
-                string sPath = new string(path);
-                string sData = new string(data);
-                System.IO.File.WriteAllText(sPath, sData);
-            }
-
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void AppendAllText(char* path, char* data)
-            {
-                string sPath = new string(path);
-                string sData = new string(data);
-                System.IO.File.AppendAllText(sPath, sData);
-            }
-
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void Delete(char* path)
-            {
-                string sPath = new string(path);
-                System.IO.File.Delete(sPath);
-            }
-
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void Copy(char* sourcePath, char* destPath)
-            {
-                string sSourcePath = new string(sourcePath);
-                string sDestPath = new string(destPath);
-                System.IO.File.Copy(sSourcePath, sDestPath);
-            }
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void Move(char* sourcePath, char* destPath)
-            {
-                string sSourcePath = new string(sourcePath);
-                string sDestPath = new string(destPath);
-                System.IO.File.Move(sSourcePath, sDestPath);
-            }
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void Exists(char* path, int* result)
-            {
-                string sPath = new string(path);
-                *result = System.IO.File.Exists(sPath) ? 1 : 0;
-            }
-
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void ReadAllBytes(char* path, byte* buffer, int length)
-            {
-                string sPath = new string(path);
-                byte[] data = System.IO.File.ReadAllBytes(sPath);
-                if (data.Length > length)
+                if (path == null)
                 {
-                    throw new ArgumentException("Buffer is too small to hold the file data.");
+                    return null;
+                }
+                if (mode == null)
+                {
+                    return null;
                 }
 
-                for (int i = 0; i < data.Length; i++)
+                if (!System.IO.File.Exists(new string(path)))
                 {
-                    buffer[i] = data[i];
+                    return null;
                 }
-            }
 
-            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void ReadAllText(char* path, char* buffer, int length)
-            {
-                string sPath = new string(path);
-                string data = System.IO.File.ReadAllText(sPath);
-                if (data.Length > length)
+                if (mode[0] == 'w')
                 {
-                    throw new ArgumentException("Buffer is too small to hold the file data.");
+                    FileStream fs = new FileStream(new string(path), FileMode.Open, FileAccess.Write);
+                    OpenHandles.Add(fs);
+                    C_FILE* file = (C_FILE*)Cosmos.Core.Memory.Heap.Alloc((uint)sizeof(C_FILE));
+                    file->_ptr = path;
+                    file->_flag = 1; // 2 = append, 1 = write, 0 = read
+                    file->_file = OpenHandles.Count - 1;
+                    return file;
                 }
-                for (int i = 0; i < data.Length; i++)
+                else if (mode[0] == 'a')
                 {
-                    buffer[i] = data[i];
+                    FileStream fs = new FileStream(new string(path), FileMode.Append, FileAccess.Write);
+                    OpenHandles.Add(fs);
+                    C_FILE* file = (C_FILE*)Cosmos.Core.Memory.Heap.Alloc((uint)sizeof(C_FILE));
+                    file->_ptr = path;
+                    file->_flag = 2; // 2 = append, 1 = write, 0 = read
+                    file->_file = OpenHandles.Count - 1;
+                    return file;
+                }
+                else if (mode[0] == 'r' && mode[1] == '+')
+                {
+                    FileStream fs = new FileStream(new string(path), FileMode.Open, FileAccess.ReadWrite);
+                    OpenHandles.Add(fs);
+                    C_FILE* file = (C_FILE*)Cosmos.Core.Memory.Heap.Alloc((uint)sizeof(C_FILE));
+                    file->_ptr = path;
+                    file->_flag = 3; // 2 = append, 1 = write, 0 = read
+                    file->_file = OpenHandles.Count - 1;
+                    return file;
+                }
+
+                else if (mode[0] == 'w' && mode[1] == '+')
+                {
+                    FileStream fs = new FileStream(new string(path), FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                    OpenHandles.Add(fs);
+                    C_FILE* file = (C_FILE*)Cosmos.Core.Memory.Heap.Alloc((uint)sizeof(C_FILE));
+                    file->_ptr = path;
+                    file->_flag = 4; // 2 = append, 1 = write, 0 = read
+                    file->_file = OpenHandles.Count - 1;
+                    return file;
+                }
+                else if (mode[0] == 'r')
+                {
+                    FileStream fs = new FileStream(new string(path), FileMode.Open, FileAccess.Read);
+                    OpenHandles.Add(fs);
+                    C_FILE* file = (C_FILE*)Cosmos.Core.Memory.Heap.Alloc((uint)sizeof(C_FILE));
+                    file->_ptr = path;
+                    file->_flag = 0; // 2 = append, 1 = write, 0 = read
+                    file->_file = OpenHandles.Count - 1;
+                    return file;
+                }
+                else
+                {
+                    return null;
                 }
             }
 
             [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void ReadAllLines(char* path, char** buffer, int length)
+            public static int FileClose(C_FILE* file)
             {
-                string sPath = new string(path);
-                string[] data = System.IO.File.ReadAllLines(sPath);
-                if (data.Length > length)
+                if (file == null)
                 {
-                    throw new ArgumentException("Buffer is too small to hold the file data.");
+                    return -1;
                 }
-                for (int i = 0; i < data.Length; i++)
+                int fileIndex = file->_file;
+                if (fileIndex < 0 || fileIndex >= OpenHandles.Count)
                 {
-                    buffer[i] = (char*)Cosmos.Core.Memory.Heap.Alloc((uint)(data[i].Length * sizeof(char)));
-                    for (int j = 0; j < data[i].Length; j++)
-                    {
-                        buffer[i][j] = data[i][j];
-                    }
+                    return -1;
                 }
+                FileStream fs = OpenHandles[fileIndex];
+                fs.Close();
+                OpenHandles.RemoveAt(fileIndex);
+                Cosmos.Core.Memory.Heap.Free(file);
+                return 0;
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static int FileRead(void* buffer, uint size, uint nmemb, C_FILE* stream)
+            {
+                
+                if (buffer == null)
+                {
+                    return -1;
+                }
+                if (stream == null)
+                {
+                    return -1;
+                }
+                int fileIndex = stream->_file;
+                if (fileIndex < 0 || fileIndex >= OpenHandles.Count)
+                {
+                    return -1;
+                }
+                
+                FileStream fs = OpenHandles[fileIndex];
+                byte[] byteBuffer = new byte[size * nmemb];
+                int bytesRead = fs.Read(byteBuffer, 0, (int)(size * nmemb));
+                for (int i = 0; i < bytesRead; i++)
+                {
+                    ((byte*)buffer)[i] = byteBuffer[i];
+                }
+                return bytesRead;
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static int FileWrite(void* buffer, uint size, uint nmemb, C_FILE* stream)
+            {
+                if (buffer == null)
+                {
+                    return -1;
+                }
+                if (stream == null)
+                {
+                    return -1;
+                }
+                int fileIndex = stream->_file;
+                if (fileIndex < 0 || fileIndex >= OpenHandles.Count)
+                {
+                    return -1;
+                }
+                FileStream fs = OpenHandles[fileIndex];
+                byte[] byteBuffer = new byte[size * nmemb];
+                for (int i = 0; i < size * nmemb; i++)
+                {
+                    byteBuffer[i] = ((byte*)buffer)[i];
+                }
+                fs.Write(byteBuffer, 0, (int)(size * nmemb));
+                return (int)(size * nmemb);
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static int FileSeek(C_FILE* stream, int offset, int whence)
+            {
+                if (stream == null)
+                {
+                    return -1;
+                }
+                int fileIndex = stream->_file;
+                if (fileIndex < 0 || fileIndex >= OpenHandles.Count)
+                {
+                    return -1;
+                }
+                FileStream fs = OpenHandles[fileIndex];
+                fs.Seek(offset, (SeekOrigin)whence);
+                return 0;
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static int FileTell(C_FILE* stream)
+            {
+                if (stream == null)
+                {
+                    return -1;
+                }
+                int fileIndex = stream->_file;
+                if (fileIndex < 0 || fileIndex >= OpenHandles.Count)
+                {
+                    return -1;
+                }
+                FileStream fs = OpenHandles[fileIndex];
+                return (int)fs.Position;
+            }
+
+            [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+            public static int FileFlush(C_FILE* stream)
+            {
+                if (stream == null)
+                {
+                    return -1;
+                }
+                int fileIndex = stream->_file;
+                if (fileIndex < 0 || fileIndex >= OpenHandles.Count)
+                {
+                    return -1;
+                }
+                FileStream fs = OpenHandles[fileIndex];
+                fs.Flush();
+                return 0;
             }
         }
 

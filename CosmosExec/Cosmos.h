@@ -4,6 +4,7 @@
 #define main __stdcall _start
 #define COSMOS_INIT() debug_serial_init(); Cosmos_RegisterFunctionTable(funcTable);
 
+
 /// @brief Register the function table for the kernel to call
 /// @param funcTable The function table to register
 void Cosmos_RegisterFunctionTable(void*** table);
@@ -96,3 +97,47 @@ void* Heap_Alloc(unsigned int size);
 /// @brief Free memory allocated from the heap
 /// @param ptr The pointer to the memory to free
 void Heap_Free(void* ptr);
+
+/// @brief Open a file for reading or writing
+/// @param filename The name of the file to open
+/// @param mode The mode to open the file in (e.g., "r", "w")
+/// @return A pointer to the opened file
+FILE* File_Open(char* filename, char* mode);
+
+/// @brief Close a file
+/// @param file The file to close
+/// @return 0 on success, fault otherwise
+int File_Close(FILE* file);
+
+/// @brief Reads from a file
+/// @param buffer The buffer to read data into
+/// @param size The size of each element to read
+/// @param nmemb The number of elements to read
+/// @param stream The file to read from
+/// @return The number of elements read
+int File_Read(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream);
+
+/// @brief Write to a file
+/// @param buffer The buffer to write data from
+/// @param size The size of each element to write
+/// @param nmemb The number of elements to write
+/// @param stream The file to write to
+/// @return The number of elements written
+int File_Write(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream);
+
+/// @brief Seek to a position in a file
+/// @param stream The file to seek in
+/// @param offset The offset to seek to
+/// @param whence The reference point for the offset (e.g., SEEK_SET, SEEK_CUR, SEEK_END)
+/// @return 0 on success, fault otherwise
+int File_Seek(FILE* stream, int offset, int whence);
+
+/// @brief Get the current position in a file
+/// @param stream The file to get the position from
+/// @return The current position in the file
+int File_Tell(FILE* stream);
+
+/// @brief Flush the file buffer
+/// @param stream The file to flush
+/// @return 0 on success, fault otherwise
+int File_Flush(FILE* stream);

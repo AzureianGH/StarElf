@@ -14,6 +14,7 @@ using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.VFS;
 using System.IO;
 using System.Diagnostics.Metrics;
+using RawExecution.Drivers.ELF;
 namespace RawExecution
 {
     public unsafe class Kernel : Sys.Kernel
@@ -27,10 +28,10 @@ namespace RawExecution
             VFSManager.RegisterVFS(mVFS);
 
             File.WriteAllBytes(@"0:\Elfs\TestElf", TestElf);
-
+            File.WriteAllText(@"0:\test.txt", "Haii!! :3");
+            
             Elf32 elf = new Elf32(@"0:\Elfs\TestElf");
             elf.LoadAndExecuteElf();
-            elf.ReloadElf();
             elf.FreeElf();
         }
 

@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 
+
 typedef unsigned int size_t;
 
 /// @brief Prevents name mangling for C++ compilers
@@ -31,6 +32,19 @@ typedef struct idt_ptr_struct {
     unsigned short limit; // size of the IDT in bytes - 1
     unsigned int base;    // address of the first entry in the IDT
 } __packed idt_ptr_t;
+
+typedef struct _iobuf {
+    char *_ptr;
+    int _cnt;
+    char *_base;
+    int _flag;
+    int _file;
+    int _charbuf;
+    int _bufsiz;
+    char *_tmpfname;
+} FILE;
+
+#include "Cosmos.h"
 
 #pragma region FUNCTION DECLARATIONS
 
@@ -179,7 +193,6 @@ void utoa(unsigned int num, char* str, int base);
 void ultoa(unsigned long num, char* str, int base);
 void uitoa(unsigned int num, char* str, int base);
 void atoi(int num, char* str, int base);
-float atof(const char* str);
 
 void printf(const char* format, ...);
 int sprintf(char* str, const char* format, ...);
@@ -192,12 +205,21 @@ void gets(char* str, size_t size);
 
 //scanf functions
 int scanf(const char *fmt, ...);
-int vscanf(const char* format, va_list ap);
-int vfscanf(const char* format, va_list ap);
-int vsscanf(const char* str, const char* format, va_list ap);
 int sscanf(const char* str, const char* format, ...);
 
 
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+
+//file functions
+FILE* fopen(const char* filename, const char* mode);
+int fclose(FILE* file);
+int fread(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream);
+int fwrite(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream);
+int fseek(FILE* stream, int offset, int whence);
+int ftell(FILE* stream);
+int fflush(FILE* stream);
 
 
 #pragma endregion FUNCTION DECLARATIONS

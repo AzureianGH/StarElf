@@ -1,4 +1,13 @@
 #include "Cosmos.h"
+
+/// ############################# READ THIS FUCKING NOTE ############################ ///
+/// Before you add your own function, for the love of god please know that            ///
+/// C# uses UTF-16 encoding for strings. This means that if you pass a string         ///
+/// to a function, it will be in UTF-16 encoding. If you want to use ASCII,           ///
+/// you need to convert it to UTF-16 first. Also note that function args are          ///
+/// passed in reverse order than what you would expect.                               ///
+/// ############################# READ THIS FUCKING NOTE ############################ ///
+
 void*** funcTable = 0;
 char lastEncoding = 0; // 0 = None, 1 = ASCII, 2 = UTF-16
 __cdecl void Cosmos_RegisterFunctionTable(void*** table) {
@@ -260,6 +269,63 @@ __cdecl void Heap_Free(void* ptr)
 }
 
 /// END CLASS 1 (Heap)
+
+// CLASS 2 (File)
+
+// INDEX 0
+__cdecl FILE* File_Open(char* filename, char* mode) 
+{
+    FILE* (*open)(char*, char*) = (FILE* (*)(char*, char*)) funcTable[2][0];
+
+    char* utf16 = ascii_to_utf16(filename);
+    char* utf16mode = ascii_to_utf16(mode);
+
+    return open(utf16mode, utf16);
+}
+
+// INDEX 1
+__cdecl int File_Close(FILE* file) 
+{
+    int (*close)(FILE*) = (int (*)(FILE*)) funcTable[2][1];
+
+    return close(file);
+}
+
+// INDEX 2
+__cdecl int File_Read(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) 
+{
+    int (*read)(void*, unsigned int, unsigned int, FILE*) = (int (*)(void*, unsigned int, unsigned int, FILE*)) funcTable[2][2];
+    return read(stream, nmemb, size, buffer);
+}
+
+// INDEX 3
+__cdecl int File_Write(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) 
+{
+    int (*write)(void*, unsigned int, unsigned int, FILE*) = (int (*)(void*, unsigned int, unsigned int, FILE*)) funcTable[2][3];
+    return write(stream, nmemb, size, buffer);
+}
+
+// INDEX 4
+__cdecl int File_Seek(FILE* stream, int offset, int whence) 
+{
+    int (*seek)(int, int, FILE*) = (int (*)(int, int, FILE*)) funcTable[2][4];
+    return seek(whence, offset, stream);
+}
+
+// INDEX 5
+__cdecl int File_Tell(FILE* stream) 
+{
+    int (*tell)(FILE*) = (int (*)(FILE*)) funcTable[2][5];
+    return tell(stream);
+}
+
+// INDEX 6
+__cdecl int File_Flush(FILE* stream) 
+{
+    int (*flush)(FILE*) = (int (*)(FILE*)) funcTable[2][6];
+    return flush(stream);
+}
+
 
 /// NO CLASS FUNCS
 

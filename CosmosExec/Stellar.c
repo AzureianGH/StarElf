@@ -1,7 +1,5 @@
 #include "Stellar.h"
 
-#include "Cosmos.h"
-
 idt_entry_t idt[256] = {0};
 idt_ptr_t idt_ptr = {0};
 
@@ -505,6 +503,15 @@ void vsnprintf(char *str, size_t size, const char *format, va_list args)
                 int i = va_arg(args, int);
                 char buf[32];
                 itoa(i, buf, 10);
+
+                // Reverse the string
+                int len = strlen(buf);
+                for (int j = 0; j < len / 2; j++) {
+                    char temp = buf[j];
+                    buf[j] = buf[len - j - 1];
+                    buf[len - j - 1] = temp;
+                }
+
                 const char *s = buf;
                 while (*s != '\0' && buffer < end)
                 {
@@ -729,6 +736,7 @@ int scanf(const char *fmt, ...) {
                         temp[i++] = *input++;
                     }
                     temp[i] = '\0';
+
                     *dest = sign * strtol(temp, NULL, 10);
                     count++;
                     break;
@@ -833,4 +841,32 @@ int sscanf(const char *str, const char *fmt, ...) {
     }
     va_end(args);
     return ret; // Return the number of items successfully read
+}
+
+FILE* fopen(const char* filename, const char* mode) {
+    return File_Open((char*)filename, (char*)mode);
+}
+
+int fclose(FILE* file) {
+    return File_Close(file);
+}
+
+int fread(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) {
+    return File_Read(buffer, size, nmemb, stream);
+}
+
+int fwrite(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) {
+    return File_Write(buffer, size, nmemb, stream);
+}
+
+int fseek(FILE* stream, int offset, int whence) {
+    return File_Seek(stream, offset, whence);
+}
+
+int ftell(FILE* stream) {
+    return File_Tell(stream);
+}
+
+int fflush(FILE* stream) {
+    return File_Flush(stream);
 }
