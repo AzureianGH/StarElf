@@ -168,25 +168,10 @@ namespace Stellib.ELF
         byte* StartIndex = null;
         private List<IntPtr> AllocatedMemory = new List<IntPtr>();
         string Path = "";
-        public Elf32(string path)
+
+        public Elf32(string path) : this(File.ReadAllBytes(path))
         {
-            byte[] bytes = File.ReadAllBytes(path);
             Path = path;
-            fixed (byte* p = bytes)
-            {
-                StartIndex = p;
-                Header = *(Elf32_Ehdr*)p;
-                Magic = new byte[4];
-                for (int i = 0; i < 4; i++)
-                {
-                    Magic[i] = Header.Magic[i];
-                }
-                for (int i = 0; i < Header.PhNum; i++)
-                {
-                    var phdr = *(Elf32_Phdr*)(p + Header.PhOff + (i * Header.PhEntSize));
-                    ProgramHeaders.Add(phdr);
-                }
-            }
         }
 
         public Elf32(byte[] bytes)
