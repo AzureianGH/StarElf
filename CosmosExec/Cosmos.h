@@ -4,6 +4,10 @@
 #define main __stdcall _start
 #define COSMOS_INIT() debug_serial_init(); Cosmos_RegisterFunctionTable(funcTable);
 
+#define COLOR_DEPTH_32 32
+#define COLOR_DEPTH_24 24
+#define COLOR_DEPTH_16 16
+#define COLOR_DEPTH_8 8
 
 /// @brief Register the function table for the kernel to call
 /// @param funcTable The function table to register
@@ -141,3 +145,21 @@ int File_Tell(FILE* stream);
 /// @param stream The file to flush
 /// @return 0 on success, fault otherwise
 int File_Flush(FILE* stream);
+
+/// @brief Create a canvas for graphics
+/// @param width The width of the canvas
+/// @param height The height of the canvas
+/// @param colordepth The color depth of the canvas
+void Graphics_Create_Canvas(int width, int height, char colordepth);
+
+/// @brief Resize the canvas
+/// @param width The new width of the canvas
+/// @param height The new height of the canvas
+void Graphics_Resize_Canvas(int width, int height);
+
+/// @brief Retrieve the framebuffer
+/// @param framebuffer The pointer to the framebuffer to fill
+void Graphics_Retrieve_Framebuffer(unsigned int** framebuffer);
+
+/// @brief Display the graphics on the screen
+void Graphics_Display(void);
