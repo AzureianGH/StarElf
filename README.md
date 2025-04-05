@@ -106,19 +106,31 @@ namespace RawExecution
 ### Current Rewrite of STDLIB
 
 ```c++
-1. malloc()
-2. free()
-3. calloc()
-4. realloc()
-5. itoa()
-6. ltoa()
-7. utoa()
-8. ultoa()
-9. uitoa()
-10. printf()
-11. sprintf()
-12. snprintf()
-13. vsnprintf()
-14. vsprintf()
-15. clrscr()
+void* malloc(size_t size);
+void free(void* ptr);
+void* calloc(size_t num, size_t size);
+void* realloc(void* ptr, size_t size);
+int isspace(int c);
+void itoa(int num, char* str, int base);
+void ltoa(long num, char* str, int base);
+void utoa(unsigned int num, char* str, int base);
+void ultoa(unsigned long num, char* str, int base);
+void uitoa(unsigned int num, char* str, int base);
+void atoi(int num, char* str, int base);
+void printf(const char* format, ...);
+int sprintf(char* str, const char* format, ...);
+int snprintf(char* str, size_t size, const char* format, ...);
+void vsnprintf(char *str, size_t size, const char *format, va_list args);
+void vsprintf(char* str, const char* format, va_list ap);
+void clrscr(void);
+void gets(char* str, size_t size);
+int scanf(const char *fmt, ...);
+int sscanf(const char* str, const char* format, ...);
+FILE* fopen(const char* filename, const char* mode);
+int fclose(FILE* file);
+int fread(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream);
+int fwrite(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream);
+int fseek(FILE* stream, int offset, int whence);
+int ftell(FILE* stream);
+int fflush(FILE* stream);
 ```
