@@ -870,3 +870,8 @@ int ftell(FILE* stream) {
 int fflush(FILE* stream) {
     return File_Flush(stream);
 }
+
+int abs(int num)
+{
+    return (num < 0) ? -num : num;
+}
