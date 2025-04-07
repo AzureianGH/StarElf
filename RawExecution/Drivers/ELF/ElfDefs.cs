@@ -288,13 +288,11 @@ namespace Stellib.ELF
         private void ExecuteEntryPoint()
         {
             byte* entryPoint = StartIndex + Header.Entry;
-            // Assuming the entry point is a function pointer, cast and call it
             var entryFunc = (delegate* unmanaged[Stdcall]<void***, void>)entryPoint;
 
             void*** CallList = CosmosCallsImpl.BuildCalls();
 
             entryFunc(CallList);
-            //call the entry functionS
             return;
         }
 

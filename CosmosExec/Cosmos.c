@@ -1,5 +1,7 @@
 #include "Cosmos.h"
 
+#define FUNC_ __attribute__((used)) __cdecl
+
 /// ############################# READ THIS FUCKING NOTE ############################ ///
 /// Before you add your own function, for the love of god please know that            ///
 /// C# uses UTF-16 encoding for strings. This means that if you pass a string         ///
@@ -10,14 +12,14 @@
 
 void*** funcTable = 0;
 char lastEncoding = 0; // 0 = None, 1 = ASCII, 2 = UTF-16
-__cdecl void Cosmos_RegisterFunctionTable(void*** table) {
+FUNC_ void Cosmos_RegisterFunctionTable(void*** table) {
     funcTable = table;
 }
 
 /// CLASS 0 (Console)
 
 // INDEX 0
-__cdecl void Console_WriteLine16(char* str) 
+FUNC_ void Console_WriteLine16(char* str) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -31,7 +33,7 @@ __cdecl void Console_WriteLine16(char* str)
 }
 
 // INDEX 1
-__cdecl void Console_Write16(char* str) 
+FUNC_ void Console_Write16(char* str) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -45,7 +47,7 @@ __cdecl void Console_Write16(char* str)
 }
 
 // INDEX 2
-__cdecl char* Console_ReadLine16(void) 
+FUNC_ char* Console_ReadLine16(void) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -59,7 +61,7 @@ __cdecl char* Console_ReadLine16(void)
 }
 
 // INDEX 3
-__cdecl void Console_WriteLineInt32(int num) 
+FUNC_ void Console_WriteLineInt32(int num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -73,7 +75,7 @@ __cdecl void Console_WriteLineInt32(int num)
 }
 
 // INDEX 4
-__cdecl void Console_WriteInt32(int num) 
+FUNC_ void Console_WriteInt32(int num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -87,7 +89,7 @@ __cdecl void Console_WriteInt32(int num)
 }
 
 // INDEX 5
-__cdecl void Console_WriteLineUInt32(unsigned int num) 
+FUNC_ void Console_WriteLineUInt32(unsigned int num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -101,7 +103,7 @@ __cdecl void Console_WriteLineUInt32(unsigned int num)
 }
 
 // INDEX 6
-__cdecl void Console_WriteUInt32(unsigned int num) 
+FUNC_ void Console_WriteUInt32(unsigned int num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -115,7 +117,7 @@ __cdecl void Console_WriteUInt32(unsigned int num)
 }
 
 // INDEX 7
-__cdecl void Console_WriteLineInt64(long long num) 
+FUNC_ void Console_WriteLineInt64(long long num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -129,7 +131,7 @@ __cdecl void Console_WriteLineInt64(long long num)
 }
 
 // INDEX 8
-__cdecl void Console_WriteInt64(long long num) 
+FUNC_ void Console_WriteInt64(long long num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -143,7 +145,7 @@ __cdecl void Console_WriteInt64(long long num)
 }
 
 // INDEX 9
-__cdecl void Console_WriteLineUInt64(unsigned long long num) 
+FUNC_ void Console_WriteLineUInt64(unsigned long long num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -157,7 +159,7 @@ __cdecl void Console_WriteLineUInt64(unsigned long long num)
 }
 
 // INDEX 10
-__cdecl void Console_WriteUInt64(unsigned long long num) 
+FUNC_ void Console_WriteUInt64(unsigned long long num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -171,7 +173,7 @@ __cdecl void Console_WriteUInt64(unsigned long long num)
 }
 
 // INDEX 11 (float)
-__cdecl void Console_WriteLineFloat(float num) 
+FUNC_ void Console_WriteLineFloat(float num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -185,7 +187,7 @@ __cdecl void Console_WriteLineFloat(float num)
 }
 
 // INDEX 12 (float)
-__cdecl void Console_WriteFloat(float num) 
+FUNC_ void Console_WriteFloat(float num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -199,7 +201,7 @@ __cdecl void Console_WriteFloat(float num)
 }
 
 // INDEX 13 (double)
-__cdecl void Console_WriteLineDouble(double num) 
+FUNC_ void Console_WriteLineDouble(double num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -213,7 +215,7 @@ __cdecl void Console_WriteLineDouble(double num)
 }
 
 // INDEX 14 (double)
-__cdecl void Console_WriteDouble(double num) 
+FUNC_ void Console_WriteDouble(double num) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -227,7 +229,7 @@ __cdecl void Console_WriteDouble(double num)
 }
 
 // INDEX 15
-__cdecl void Console_Clear(void) 
+FUNC_ void Console_Clear(void) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 2;
@@ -241,7 +243,7 @@ __cdecl void Console_Clear(void)
 }
 
 // INDEX 16
-__cdecl void Console_SetCursorPosition(int x, int y) 
+FUNC_ void Console_SetCursorPosition(int x, int y) 
 {
     void (*setCursor)(int, int) = (void (*)(int, int)) funcTable[0][16];
 
@@ -253,7 +255,7 @@ __cdecl void Console_SetCursorPosition(int x, int y)
 // CLASS 1 (Heap)
 
 // INDEX 0
-__cdecl void* Heap_Alloc(unsigned int size) 
+FUNC_ void* Heap_Alloc(unsigned int size) 
 {
     void* (*alloc)(unsigned int) = (void* (*)(unsigned int)) funcTable[1][0];
 
@@ -261,7 +263,7 @@ __cdecl void* Heap_Alloc(unsigned int size)
 }
 
 // INDEX 1
-__cdecl void Heap_Free(void* ptr) 
+FUNC_ void Heap_Free(void* ptr) 
 {
     void (*free)(void*) = (void (*)(void*)) funcTable[1][1];
 
@@ -273,7 +275,7 @@ __cdecl void Heap_Free(void* ptr)
 // CLASS 2 (File)
 
 // INDEX 0
-__cdecl FILE* File_Open(char* filename, char* mode) 
+FUNC_ FILE* File_Open(char* filename, char* mode) 
 {
     FILE* (*open)(char*, char*) = (FILE* (*)(char*, char*)) funcTable[2][0];
 
@@ -284,7 +286,7 @@ __cdecl FILE* File_Open(char* filename, char* mode)
 }
 
 // INDEX 1
-__cdecl int File_Close(FILE* file) 
+FUNC_ int File_Close(FILE* file) 
 {
     int (*close)(FILE*) = (int (*)(FILE*)) funcTable[2][1];
 
@@ -292,44 +294,69 @@ __cdecl int File_Close(FILE* file)
 }
 
 // INDEX 2
-__cdecl int File_Read(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) 
+FUNC_ int File_Read(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) 
 {
     int (*read)(void*, unsigned int, unsigned int, FILE*) = (int (*)(void*, unsigned int, unsigned int, FILE*)) funcTable[2][2];
     return read(stream, nmemb, size, buffer);
 }
 
 // INDEX 3
-__cdecl int File_Write(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) 
+FUNC_ int File_Write(void* buffer, unsigned int size, unsigned int nmemb, FILE* stream) 
 {
     int (*write)(void*, unsigned int, unsigned int, FILE*) = (int (*)(void*, unsigned int, unsigned int, FILE*)) funcTable[2][3];
     return write(stream, nmemb, size, buffer);
 }
 
 // INDEX 4
-__cdecl int File_Seek(FILE* stream, int offset, int whence) 
+FUNC_ int File_Seek(FILE* stream, int offset, int whence) 
 {
     int (*seek)(int, int, FILE*) = (int (*)(int, int, FILE*)) funcTable[2][4];
     return seek(whence, offset, stream);
 }
 
 // INDEX 5
-__cdecl int File_Tell(FILE* stream) 
+FUNC_ int File_Tell(FILE* stream) 
 {
     int (*tell)(FILE*) = (int (*)(FILE*)) funcTable[2][5];
     return tell(stream);
 }
 
 // INDEX 6
-__cdecl int File_Flush(FILE* stream) 
+FUNC_ int File_Flush(FILE* stream) 
 {
     int (*flush)(FILE*) = (int (*)(FILE*)) funcTable[2][6];
     return flush(stream);
 }
 
+// CLASS 3 (Graphics)
+
+// // INDEX 0
+// FUNC_ void Graphics_CreateCanvas(unsigned int width, unsigned int height) 
+// {
+//     void (*createCanvas)(unsigned int, unsigned int) = (void (*)(unsigned int, unsigned int)) funcTable[3][0];
+
+//     createCanvas(height, width);
+// }
+
+// // INDEX 1
+// FUNC_ void Graphics_ClearCanvas(unsigned int color) 
+// {
+//     void (*clearCanvas)(unsigned int) = (void (*)(unsigned int)) funcTable[3][1];
+
+//     clearCanvas(color);
+// }
+
+// // INDEX 2
+// FUNC_ void Graphics_DrawPixel(unsigned int color, int x, int y) 
+// {
+//     void (*drawPixel)(int, int, unsigned int) = (void (*)(int, int, unsigned int)) funcTable[3][2];
+
+//     drawPixel(y, x, color);
+// }
 
 /// NO CLASS FUNCS
 
-__cdecl void Console_WriteLineA(char* str)
+FUNC_ void Console_WriteLineA(char* str)
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 1;
@@ -343,7 +370,7 @@ __cdecl void Console_WriteLineA(char* str)
     return;
 }
 
-__cdecl void Console_WriteA(char* str)
+FUNC_ void Console_WriteA(char* str)
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 1;
@@ -357,7 +384,7 @@ __cdecl void Console_WriteA(char* str)
     return;
 }
 
-__cdecl char* Console_ReadLineA(void) 
+FUNC_ char* Console_ReadLineA(void) 
 {
     #ifdef PREVENT_ENCODING_MANGLING
     if (lastEncoding == 0) lastEncoding = 1;

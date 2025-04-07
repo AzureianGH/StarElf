@@ -1,8 +1,8 @@
 # Makefile for compiling all C files in the current directory
 
 CC = gcc
-CFLAGS = -m32 -nostdlib -ffreestanding
-LDFLAGS = -Wl,--build-id=none -Wl,-e,_start
+CFLAGS = -m32 -nostdlib -ffreestanding -O0 -g
+LDFLAGS = -Wl,--build-id=none -Wl,-e,_start -O0 -g
 OUTPUT = TestElf
 
 SOURCES = $(wildcard *.c)

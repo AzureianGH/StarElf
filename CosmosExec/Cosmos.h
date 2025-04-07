@@ -3,7 +3,7 @@
 #define PREVENT_ENCODING_MANGLING
 #define main __stdcall _start
 #define COSMOS_INIT() debug_serial_init(); Cosmos_RegisterFunctionTable(funcTable);
-
+#define FUNC_ __attribute__((used)) __cdecl
 
 /// @brief Register the function table for the kernel to call
 /// @param funcTable The function table to register
@@ -141,3 +141,18 @@ int File_Tell(FILE* stream);
 /// @param stream The file to flush
 /// @return 0 on success, fault otherwise
 int File_Flush(FILE* stream);
+
+/// @brief Create a canvas for graphics
+/// @param width The width of the canvas
+/// @param height The height of the canvas
+void Graphics_CreateCanvas(unsigned int width, unsigned int height);
+
+/// @brief Clear the canvas with a color
+/// @param color The color to clear the canvas with
+void Graphics_ClearCanvas(unsigned int color);
+
+/// @brief Draw a pixel on the canvas
+/// @param color The color of the pixel
+/// @param x The x coordinate of the pixel
+/// @param y The y coordinate of the pixel
+void Graphics_DrawPixel(unsigned int color, int x, int y);
