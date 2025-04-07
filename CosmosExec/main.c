@@ -10,20 +10,43 @@ int get_file_size(FILE* file) {
 
 NO_NAME_MANGLE void main(void*** funcTable) {
     COSMOS_INIT();
+    
+    char file[100];
 
     clrscr();
 
-    Graphics_Create_Canvas(800, 600, COLOR_DEPTH_32);
+    printf("Enter file name: ");
+    scanf("%s", file);
+    printf("File name: %s\n", file);
 
-    unsigned int* fb;
-    Graphics_Retrieve_Framebuffer(&fb);
-
-    for (int y = 0; y < 600; y++) {
-        for (int x = 0; x < 800; x++) {
-            fb[y * 800 + x] = 0xFFFFFFFF; // White ARGB: full alpha, R, G, B
-        }
+    FILE* handle = fopen(file, "r+");
+    if (handle == NULL) {
+        printf("Failed to open file.\n");
+        return;
     }
+
+    int size = get_file_size(handle);
+    printf("File size: %d bytes\n", size);
     
+    char* buffer = (char*)malloc(size + 1);
+    if (buffer == NULL) {
+        printf("Failed to allocate memory.\n");
+        fclose(handle);
+        return;
+    }
+
+    int bytesRead = fread(buffer, 1, size, handle);
+    if (bytesRead != size) {
+        printf("Failed to read file.\n");
+        free(buffer);
+        fclose(handle);
+        return;
+    }
+
+    buffer[size] = '\0';
+    printf("File contents: %s\n", buffer);
+
+    fclose(handle);
 
     return;
 }

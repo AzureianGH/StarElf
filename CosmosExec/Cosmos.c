@@ -326,39 +326,6 @@ __cdecl int File_Flush(FILE* stream)
     return flush(stream);
 }
 
-// CLASS 3 (Graphics)
-
-// INDEX 0
-__cdecl void Graphics_Create_Canvas(int width, int height, char colordepth)
-{
-    void (*createCanvas)(int, int, char) = (void (*)(int, int, char)) funcTable[3][0];
-
-    createCanvas(colordepth, height, width);
-}
-
-// INDEX 1
-__cdecl void Graphics_Resize_Canvas(int width, int height)
-{
-    void (*resizeCanvas)(int, int) = (void (*)(int, int)) funcTable[3][1];
-
-    resizeCanvas(height, width);
-}
-
-// INDEX 2
-__cdecl void Graphics_Retrieve_Framebuffer(unsigned int** framebuffer)
-{
-    void (*retrieveFramebuffer)(unsigned int**) = (void (*)(unsigned int**)) funcTable[3][2];
-
-    retrieveFramebuffer(framebuffer);
-}
-
-// INDEX 3
-__cdecl void Graphics_Display()
-{
-    void (*display)(void) = (void (*)(void)) funcTable[3][3];
-
-    display();
-}
 
 /// NO CLASS FUNCS
 
