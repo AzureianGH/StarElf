@@ -19,7 +19,7 @@
         <PxeInterface>192.168.0.8</PxeInterface>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RemoveBootDebugOutput>True</RemoveBootDebugOutput>
-        <OptimizationLevel>0</OptimizationLevel>
+        <OptimizationLevel>2</OptimizationLevel>
         <DebugEnabled>False</DebugEnabled>
         <QemuUseCustomLocation>False</QemuUseCustomLocation>
         <QemuUseSerial>True</QemuUseSerial>
@@ -30,10 +30,6 @@
         <QemuMemory>1024</QemuMemory>
         <QemuVideoDriver>VMWare</QemuVideoDriver>
         <VMWareEdition>Player</VMWareEdition>
-        <CompileVBEMultiboot>True</CompileVBEMultiboot>
-        <VBEResolution></VBEResolution>
-        <StackCorruptionDetectionEnabled>False</StackCorruptionDetectionEnabled>
-        <Timeout>0</Timeout>
     </PropertyGroup>
 
     <ItemGroup>

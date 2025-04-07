@@ -9,11 +9,6 @@
 /// ############################# READ THIS FUCKING NOTE ############################ ///
 
 void*** funcTable = 0;
-
-unsigned int framebufferWidth = 0;
-unsigned int framebufferHeight = 0;
-unsigned int* framebuffer = 0;
-
 char lastEncoding = 0; // 0 = None, 1 = ASCII, 2 = UTF-16
 __cdecl void Cosmos_RegisterFunctionTable(void*** table) {
     funcTable = table;
@@ -334,15 +329,11 @@ __cdecl int File_Flush(FILE* stream)
 // CLASS 3 (Graphics)
 
 // INDEX 0
-__cdecl void Graphics_Create_Canvas(int width, int height)
+__cdecl void Graphics_Create_Canvas(int width, int height, char colordepth)
 {
-    void (*createCanvas)(int, int) = (void (*)(int, int)) funcTable[3][0];
+    void (*createCanvas)(int, int, char) = (void (*)(int, int, char)) funcTable[3][0];
 
-    framebufferWidth = width;
-    framebufferHeight = height;
-    createCanvas(height, width);
-
-    framebuffer = (unsigned int*)malloc(width * height * sizeof(unsigned int));
+    createCanvas(colordepth, height, width);
 }
 
 // INDEX 1
@@ -351,16 +342,11 @@ __cdecl void Graphics_Resize_Canvas(int width, int height)
     void (*resizeCanvas)(int, int) = (void (*)(int, int)) funcTable[3][1];
 
     resizeCanvas(height, width);
-
-    framebufferWidth = width;
-    framebufferHeight = height;
-    framebuffer = (unsigned int*)realloc(framebuffer, width * height * sizeof(unsigned int));
 }
 
 // INDEX 2
 __cdecl void Graphics_Retrieve_Framebuffer(unsigned int** framebuffer)
 {
-    
     void (*retrieveFramebuffer)(unsigned int**) = (void (*)(unsigned int**)) funcTable[3][2];
 
     retrieveFramebuffer(framebuffer);
@@ -372,14 +358,6 @@ __cdecl void Graphics_Display()
     void (*display)(void) = (void (*)(void)) funcTable[3][3];
 
     display();
-}
-
-// INDEX 4
-__cdecl void Graphics_Flatten(unsigned int* framebuffer)
-{
-    void (*flatten)(unsigned int*) = (void (*)(unsigned int*)) funcTable[3][4];
-
-    flatten(framebuffer);
 }
 
 /// NO CLASS FUNCS
@@ -422,27 +400,4 @@ __cdecl char* Console_ReadLineA(void)
     #endif
     char* utf16 = Console_ReadLine16();
     return utf16_to_ascii(utf16);
-}
-
-__cdecl void Graphics_Draw_Pixel(int x, int y, unsigned int color) 
-{
-    if (x >= 0 && x < framebufferWidth && y >= 0 && y < framebufferHeight) {
-        framebuffer[y * framebufferWidth + x] = color;
-    }
-}
-__cdecl void Graphics_Draw_Rectangle(int x, int y, int width, int height, unsigned int color) 
-{
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            Graphics_Draw_Pixel(x + j, y + i, color);
-        }
-    }
-}  
-__cdecl void Graphics_Clear(unsigned int color) 
-{
-    for (int i = 0; i < framebufferHeight; i++) {
-        for (int j = 0; j < framebufferWidth; j++) {
-            framebuffer[i * framebufferWidth + j] = color;
-        }
-    }
 }

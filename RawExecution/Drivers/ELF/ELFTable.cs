@@ -1,7 +1,5 @@
-﻿using Cosmos.Core;
-using Cosmos.Core.Multiboot;
+﻿using Cosmos.Core.Multiboot;
 using Cosmos.Core.Multiboot.Tags;
-using Cosmos.HAL.Drivers.Audio;
 using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
@@ -83,7 +81,7 @@ namespace RawExecution.Drivers.ELF
             public delegate* unmanaged[Stdcall]<C_FILE*, int> FileFlushFunc;
 
             // graphics functions
-            public delegate* unmanaged[Stdcall]<int, int, void> CreateCanvasFunc;
+            public delegate* unmanaged[Stdcall]<int, int, char, void> CreateCanvasFunc;
             public delegate* unmanaged[Stdcall]<int, int, void> ResizeCanvasFunc;
             public delegate* unmanaged[Stdcall]<uint**, void> RetrieveFramebufferFunc;
             public delegate* unmanaged[Stdcall]<void> DisplayCanvasFunc;
@@ -118,7 +116,7 @@ namespace RawExecution.Drivers.ELF
                 delegate* unmanaged[Stdcall]<C_FILE*, int> fileTellFunc,
                 delegate* unmanaged[Stdcall]<C_FILE*, int> fileFlushFunc,
 
-                delegate* unmanaged[Stdcall]<int, int, void> createCanvasFunc,
+                delegate* unmanaged[Stdcall]<int, int, char, void> createCanvasFunc,
                 delegate* unmanaged[Stdcall]<int, int, void> resizeCanvasFunc,
                 delegate* unmanaged[Stdcall]<uint**, void> retrieveFramebufferFunc,
                 delegate* unmanaged[Stdcall]<void> displayCanvasFunc
@@ -269,7 +267,7 @@ namespace RawExecution.Drivers.ELF
         private static void** BuildFunctionTableForGraphics()
         {
             // define Graphics functions in a modular way
-            delegate* unmanaged[Stdcall]<int, int, void> createCanvasFunc = &Cosmos_Graphics.Create_Canvas;
+            delegate* unmanaged[Stdcall]<int, int, char, void> createCanvasFunc = &Cosmos_Graphics.Create_Canvas;
             delegate* unmanaged[Stdcall]<int, int, void> resizeCanvasFunc = &Cosmos_Graphics.Resize_Canvas;
             delegate* unmanaged[Stdcall]<uint**, void> retrieveFramebufferFunc = &Cosmos_Graphics.RetrieveFramebuffer;
             delegate* unmanaged[Stdcall]<void> displayCanvasFunc = &Cosmos_Graphics.DisplayCanvas;
@@ -614,16 +612,11 @@ namespace RawExecution.Drivers.ELF
         public static class Cosmos_Graphics
         {
             static Canvas tempCan;
-            static byte* CanvasBuffer;
-            static int CanvasWidth;
-            static int CanvasHeight;
             [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-            public static void Create_Canvas(int width, int height)
+            public static void Create_Canvas(int width, int height, char colordepth)
             {
                 tempCan = FullScreenCanvas.GetFullScreenCanvas();
-                tempCan.Mode = new Mode((uint)width, (uint)height, ColorDepth.ColorDepth32);
-                CanvasWidth = width;
-                CanvasHeight = height;
+                tempCan.Mode = new Mode((uint)width, (uint)height, (ColorDepth)colordepth);
                 tempCan.Clear(0);
                 tempCan.Display();
             }
@@ -633,13 +626,12 @@ namespace RawExecution.Drivers.ELF
             {
                 if (tempCan != null)
                 {
-                    tempCan.Mode = new Mode((uint)width, (uint)height, ColorDepth.ColorDepth32);
+                    tempCan.Mode = new Mode((uint)width, (uint)height, tempCan.Mode.ColorDepth);
                     tempCan.Clear(0);
                     tempCan.Display();
                 }
             }
 
-            [Obsolete("This function is no longer supported. It may return the incorrect address.")]
             [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
             public static void RetrieveFramebuffer(uint** Framebuffer)
             {

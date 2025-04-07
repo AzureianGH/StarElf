@@ -3,7 +3,5 @@
         "cosmos.h": "c",
         "stellar.h": "c",
         "stdint.h": "c"
-    },
-    "makefile.configureOnOpen": true,
-    "C_Cpp.default.compilerPath": "C:/w64devkit/bin/gcc.exe"
+    }
 }

@@ -221,8 +221,5 @@ int fseek(FILE* stream, int offset, int whence);
 int ftell(FILE* stream);
 int fflush(FILE* stream);
 
-//math functions
-int abs(int num);
-
 
 #pragma endregion FUNCTION DECLARATIONS

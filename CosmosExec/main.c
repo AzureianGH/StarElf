@@ -13,11 +13,17 @@ NO_NAME_MANGLE void main(void*** funcTable) {
 
     clrscr();
 
-    Graphics_Create_Canvas(800, 600);
+    Graphics_Create_Canvas(800, 600, COLOR_DEPTH_32);
 
-    Graphics_Clear(0xFF0000); // Red background
+    unsigned int* fb;
+    Graphics_Retrieve_Framebuffer(&fb);
 
-    Graphics_Display();
+    for (int y = 0; y < 600; y++) {
+        for (int x = 0; x < 800; x++) {
+            fb[y * 800 + x] = 0xFFFFFFFF; // White ARGB: full alpha, R, G, B
+        }
+    }
+    
 
     return;
 }

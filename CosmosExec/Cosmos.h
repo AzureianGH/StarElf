@@ -9,13 +9,6 @@
 #define COLOR_DEPTH_16 16
 #define COLOR_DEPTH_8 8
 
-typedef unsigned char byte;
-typedef signed char sbyte;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned long long ulong;
-typedef signed long long longlong;
-
 /// @brief Register the function table for the kernel to call
 /// @param funcTable The function table to register
 void Cosmos_RegisterFunctionTable(void*** table);
@@ -157,7 +150,7 @@ int File_Flush(FILE* stream);
 /// @param width The width of the canvas
 /// @param height The height of the canvas
 /// @param colordepth The color depth of the canvas
-void Graphics_Create_Canvas(int width, int height);
+void Graphics_Create_Canvas(int width, int height, char colordepth);
 
 /// @brief Resize the canvas
 /// @param width The new width of the canvas
@@ -170,25 +163,3 @@ void Graphics_Retrieve_Framebuffer(unsigned int** framebuffer);
 
 /// @brief Display the graphics on the screen
 void Graphics_Display(void);
-
-/// @brief Set a pixel in the canvas
-/// @param x The x coordinate of the pixel
-/// @param y The y coordinate of the pixel
-/// @param color The color of the pixel
-void Graphics_Draw_Pixel(int x, int y, unsigned int color);
-
-/// @brief Draw a rectangle in the canvas
-/// @param x The x coordinate of the top-left corner of the rectangle
-/// @param y The y coordinate of the top-left corner of the rectangle
-/// @param width The width of the rectangle
-/// @param height The height of the rectangle
-/// @param color The color of the rectangle
-void Graphics_Draw_Rectangle(int x, int y, int width, int height, unsigned int color);
-
-/// @brief Clear the canvas
-/// @param color The color to clear the canvas with
-void Graphics_Clear(unsigned int color);
-
-/// @brief Submit a framebuffer to the screen
-/// @param framebuffer The framebuffer to submit
-void Graphics_Flatten(unsigned int* framebuffer);
